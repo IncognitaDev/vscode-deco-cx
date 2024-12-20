@@ -1,67 +1,52 @@
-// Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
-
 import * as vscode from "vscode";
 
-export const simpleRoute = new vscode.CompletionItem("Fresh - Simple Route");
-simpleRoute.insertText = new vscode.SnippetString(
+export const inlineLoader = new vscode.CompletionItem("Deco - Loader");
+inlineLoader.insertText = new vscode.SnippetString(
   [
-    "export default function ${1:Page}(props: PageProps) {",
+    "export const loader = (props: Page, req: Request, ctx: AppContext) => {",
+    "	return {",
+    "		...props",
+    "	}",
+    "};",
+  ].join("\n")
+);
+
+export const inlineAction = new vscode.CompletionItem("Deco - Action");
+inlineAction.insertText = new vscode.SnippetString(
+  [
+    "export const action = (props: Page, req: Request, ctx: AppContext) => {",
+    "	return {",
+    "		...props",
+    "	}",
+    "};",
+  ].join("\n")
+);
+
+export const loadingFallback = new vscode.CompletionItem(
+  "Deco - Loading Fallback"
+);
+loadingFallback.insertText = new vscode.SnippetString(
+  [
+    "export const loadingFallback = (props: Props) => {",
     "	return (",
-    "		<main>",
-    "			<h1>About</h1>",
-    "			<p>This is the about page.</p>",
-    "		</main>",
+    "		<div><h2>loading...</h2></div>",
     "	);",
-    "});",
-  ].join("\n"),
+    "};",
+  ].join("\n")
 );
 
-export const customHandlers = new vscode.CompletionItem(
-  "Fresh - Custom Handlers",
+export const errorFallback = new vscode.CompletionItem("Deco - Error Fallback");
+errorFallback.insertText = new vscode.SnippetString(
+  [
+    "export function ErrorFallback({ error }: { error?: Error }) {",
+    "  // Your error handling logic goes here",
+    "  // You can display an error message, log the error, or render a fallback UI",
+    "  return (",
+    "    <div>",
+    "      <h2>Oops! Something went wrong.</h2>",
+    "      <p>{error.message}</p>",
+    "    </div>",
+    "  );",
+    "};",
+  ].join("\n")
 );
-customHandlers.insertText = new vscode.SnippetString([
-  "export const handler: Handlers = {",
-  "	async GET(_req, ctx) {",
-  "    return await ctx.render();",
-  "  },",
-  "};",
-].join("\n"));
-
-export const layout = new vscode.CompletionItem(
-  "Fresh - Layouts",
-);
-
-layout.insertText = new vscode.SnippetString([
-  "export default function Layout({ Component, state }: LayoutProps) {",
-  "	// do something with state here",
-  "	return (",
-  '		<div class="layout">',
-  "			<Component />",
-  "		</div>",
-  "	);",
-  "}",
-].join("\n"));
-
-export const defineRoute = new vscode.CompletionItem(
-  "Fresh - Define Route",
-);
-defineRoute.insertText = new vscode.SnippetString([
-  "export default defineRoute(async (req, ctx) => {",
-  "	return (",
-  "		<div></div>",
-  "	);",
-  "});",
-].join("\n"));
-
-export const defineLayout = new vscode.CompletionItem(
-  "Fresh - Define Layout",
-);
-defineLayout.insertText = new vscode.SnippetString([
-  "export default defineLayout(async (req, ctx) => {",
-  "	return (",
-  "		<div>",
-  "			<ctx.Component />",
-  "		</div>",
-  "	);",
-  "});",
-].join("\n"));

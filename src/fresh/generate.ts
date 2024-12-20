@@ -209,12 +209,30 @@ export async function generateRoute(uri: vscode.Uri) {
   }
 }
 
+const getFolderUri = (folderName: string): vscode.Uri | undefined => {
+  if (!vscode.workspace.workspaceFolders) {
+    vscode.window.showErrorMessage("No workspace is opened");
+    return undefined;
+  }
+
+  const basePath = vscode.workspace.workspaceFolders[0].uri;
+  return vscode.Uri.joinPath(basePath, folderName);
+};
+
 async function generateFile(
   uri: vscode.Uri,
   body: string,
+  folderName: string,
   defaultFileName = "index.tsx",
 ) {
-  if (!uri) {
+  if (!vscode.workspace.workspaceFolders) {
+    vscode.window.showErrorMessage("No workspace is opened");
+    return;
+}
+
+  const folderUri = uri ?? getFolderUri(folderName);
+
+  if (!folderUri) {
     vscode.window.showErrorMessage(
       "Please left click on a folder in the explorer and try again from context menu",
     );
@@ -231,7 +249,7 @@ async function generateFile(
     return;
   }
 
-  const newFile = uri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
+  const newFile = folderUri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
 
   const nameForClass = camelizeWhatever(fileName.split(".")[0]);
   body = body.replace(/__FILENAME__/g, nameForClass);
@@ -245,21 +263,6 @@ async function generateFile(
   }
 }
 
-export async function generateLayout(uri: vscode.Uri) {
-  const body = `// Document https://fresh.deno.dev/docs/concepts/layouts
-
-import { PageProps } from "$fresh/server.ts";
-
-export default function Layout({ Component, state }: PageProps) {
-  return (
-    <div class="layout">
-      <Component />
-    </div>
-  );
-}`;
-
-  await generateFile(uri, body, "_layout.tsx");
-}
 
 export async function generateComponent(uri: vscode.Uri) {
   const body = `import { JSX } from "preact";
@@ -272,11 +275,11 @@ export function __FILENAME__(props: JSX.HTMLAttributes<HTMLDivElement>) {
   );
 }`;
 
-  await generateFile(uri, body);
+  await generateFile(uri, body, "components");
 }
 
 export async function generateIsland(uri: vscode.Uri) {
-  const body = `// Document https://fresh.deno.dev/docs/concepts/islands
+  const body = `// Document https://docs.deco.cx/en/performance/islands#islands
 
 import { useSignal } from "@preact/signals";
 
@@ -292,5 +295,100 @@ export default function __FILENAME__() {
   );
 }`;
 
-  await generateFile(uri, body);
+
+
+  await generateFile(uri, body, 'islands');
+}
+
+export async function generateLoader(uri: vscode.Uri) {
+  const body = `// Document https://docs.deco.cx/en/concepts/loader#loader
+  import { AppContext } from "site/apps/site.ts";
+
+export interface Props {
+  
+}
+
+const loader = async (props: Props,req: Request, ctx: AppContext): Promise<unknown | null> => {
+  return null;
+};
+
+export default loader;
+`;
+
+  await generateFile(uri, body, 'loaders');
+}
+
+export async function generateAction(uri: vscode.Uri) {
+  const body = `// Document https://docs.deco.cx/en/concepts/action#action
+import { AppContext } from "site/apps/site.ts";
+
+export interface Props {
+  
+}
+
+const action = async (props: Props,req: Request, ctx: AppContext): Promise<unknown | null> => {
+  return null;
+};
+
+export default action;
+`;
+
+  await generateFile(uri, body, 'actions');
+}
+
+export async function generateSection(uri: vscode.Uri) {
+  const body = `// Document https://docs.deco.cx/en/cms-capabilities/content/sections#sections
+
+export default function __FILENAME__() {
+
+  return (
+    <div>
+      <h2>__FILENAME__</h2>
+    </div>
+  );
+}
+
+export function LoadingFallback() {
+  return (
+    <div style={{ height: "716px" }} class="flex justify-center items-center">
+      <span class="loading loading-spinner" />
+    </div>
+  );
+}
+`;
+
+  await generateFile(uri, body, "sections");
+}
+
+export async function exportAsIsland(uri: vscode.Uri) {
+  const body = `// Document https://docs.deco.cx/en/performance/islands#islands
+
+import Component from "./__FILENAME__";
+import type { Props } from "./__FILENAME__";
+
+function Island(props: Props) {
+  return <Component {...props} />;
+}
+
+export default Island;
+`;
+
+  await generateFile(uri, body, "islands");
+}
+
+
+export async function exportAsSection(uri: vscode.Uri) {
+  const body = `// Document https://docs.deco.cx/en/cms-capabilities/content/sections#sections
+export { default } from "./__FILENAME__";
+
+export function LoadingFallback() {
+  return (
+    <div style={{ height: "716px" }} class="flex justify-center items-center">
+      <span class="loading loading-spinner" />
+    </div>
+  );
+}
+`;
+
+  await generateFile(uri, body, "sections");
 }

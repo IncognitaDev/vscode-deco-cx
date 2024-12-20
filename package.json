@@ -1,11 +1,11 @@
 {
-  "name": "fresh-framework-helper",
-  "displayName": "Fresh framework helper",
-  "description": "Deno Fresh Framework Snippets & Code generator",
-  "repository": "https://github.com/hashrock/vscode-fresh-framework-helper",
+  "name": "deco-cx",
+  "displayName": "Deco.cx",
+  "description": "Deco.cx Snippets & Code generator",
+  "repository": "https://github.com/incognitaDev/vscode-deco-cx",
   "license": "MIT",
-  "version": "0.0.7",
-  "publisher": "hashrock",
+  "version": "0.0.0",
+  "publisher": "incognita",
   "icon": "logo.png",
   "engines": {
     "vscode": "^1.81.0"
@@ -16,85 +16,92 @@
   ],
   "keywords": [
     "deno",
-    "fresh"
+    "fresh",
+    "deco",
+    "deco.cx"
   ],
   "activationEvents": [
     "workspaceContains:fresh.gen.ts"
   ],
   "contributes": {
-    "views": {
-      "explorer": [
-        {
-          "type": "webview",
-          "id": "hashrock.fresh.routeView",
-          "name": "Fresh Routes",
-          "when": "is-fresh-project"
-        }
-      ]
-    },
     "commands": [
       {
-        "command": "hashrock.fresh.generateRoute",
-        "title": "New Route Component",
-        "when": "is-fresh-project"
-      },
-      {
-        "command": "hashrock.fresh.generateLayout",
-        "title": "New Layout",
-        "when": "is-fresh-project"
-      },
-      {
-        "command": "hashrock.fresh.generateComponent",
+        "command": "incognita.deco.generateComponent",
         "title": "New Component",
         "when": "is-fresh-project"
       },
       {
-        "command": "hashrock.fresh.generateIsland",
+        "command": "incognita.deco.generateIsland",
         "title": "New Island Component",
+        "when": "is-fresh-project"
+      },
+      {
+        "command": "incognita.deco.generateSection",
+        "title": "New Section",
+        "when": "is-fresh-project"
+      },
+      {
+        "command": "incognita.deco.generateLoader",
+        "title": "New Loader",
+        "when": "is-fresh-project"
+      },
+      {
+        "command": "incognita.deco.generateAction",
+        "title": "New Action",
         "when": "is-fresh-project"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "hashrock.fresh.generateRoute",
-          "group": "Fresh"
-        },
-        {
-          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "hashrock.fresh.generateRoute",
-          "group": "Fresh"
-        },
-        {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /islands/",
-          "command": "hashrock.fresh.generateIsland",
-          "group": "Fresh"
+          "command": "incognita.deco.generateIsland",
+          "group": "Deco"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /islands/",
-          "command": "hashrock.fresh.generateIsland",
-          "group": "Fresh"
+          "command": "incognita.deco.generateIsland",
+          "group": "Deco"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /components/",
-          "command": "hashrock.fresh.generateComponent",
-          "group": "Fresh"
+          "command": "incognita.deco.generateComponent",
+          "group": "Deco"
         },
         {
           "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /components/",
-          "command": "hashrock.fresh.generateComponent",
-          "group": "Fresh"
+          "command": "incognita.deco.generateComponent",
+          "group": "Deco"
         },
         {
-          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /routes/",
-          "command": "hashrock.fresh.generateLayout",
-          "group": "Fresh"
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /sections/",
+          "command": "incognita.deco.generateSection",
+          "group": "Deco"
         },
         {
-          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /routes/",
-          "command": "hashrock.fresh.generateLayout",
-          "group": "Fresh"
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /sections/",
+          "command": "incognita.deco.generateSection",
+          "group": "Deco"
+        },
+        {
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /loaders/",
+          "command": "incognita.deco.generateLoader",
+          "group": "Deco"
+        },
+        {
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /loaders/",
+          "command": "incognita.deco.generateLoader",
+          "group": "Deco"
+        },
+        {
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceFilename =~ /actions/",
+          "command": "incognita.deco.generateAction",
+          "group": "Deco"
+        },
+        {
+          "when": "is-fresh-project && explorerResourceIsFolder && resourceDirname =~ /actions/",
+          "command": "incognita.deco.generateAction",
+          "group": "Deco"
         }
       ]
     }
