@@ -4,7 +4,7 @@
   "description": "Deco.cx Snippets & Code generator",
   "repository": "https://github.com/incognitaDev/vscode-deco-cx",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "incognita",
   "icon": "logo.png",
   "engines": {
