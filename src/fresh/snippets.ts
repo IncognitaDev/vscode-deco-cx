@@ -27,7 +27,7 @@ export const loadingFallback = new vscode.CompletionItem(
 );
 loadingFallback.insertText = new vscode.SnippetString(
   [
-    "export const loadingFallback = (props: Props) => {",
+    "export const LoadingFallback = (props: Props) => {",
     "	return (",
     "		<div><h2>loading...</h2></div>",
     "	);",
