@@ -258,6 +258,7 @@ const loader = async (props: Props,req: Request, ctx: AppContext): Promise<unkno
   return null;
 };
 
+// https://docs.deco.cx/pt/developing-capabilities/manage-block-access
 export const defaultVisibility =  'public'
 
 export default loader;
@@ -278,6 +279,7 @@ const action = async (props: Props,req: Request, ctx: AppContext): Promise<unkno
   return null;
 };
 
+// https://docs.deco.cx/pt/developing-capabilities/manage-block-access
 export const defaultVisibility =  'public'
 
 export default action;
