@@ -29,7 +29,9 @@ loadingFallback.insertText = new vscode.SnippetString(
   [
     "export const LoadingFallback = (props: Props) => {",
     "	return (",
-    "		<div><h2>loading...</h2></div>",
+    '   <div style={{ height: "716px" }} class="flex justify-center items-center">',
+    '     <span class="loading loading-spinner" />',
+    "   </div>",
     "	);",
     "};",
   ].join("\n")

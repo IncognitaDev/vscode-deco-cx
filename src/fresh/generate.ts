@@ -2,13 +2,19 @@
 
 import * as vscode from "vscode";
 
+const extensionMap = {
+  loaders: ".ts",
+  actions: ".ts",
+  sections: ".tsx",
+  islands: ".tsx",
+  components: ".tsx",
+};
+
 async function writeFile(newFile: string, body: string) {
   // check if file exists
   let fileExists;
   try {
-    fileExists = await vscode.workspace.fs.stat(
-      vscode.Uri.file(newFile),
-    );
+    fileExists = await vscode.workspace.fs.stat(vscode.Uri.file(newFile));
   } catch (_error) {
     // do nothing
   }
@@ -19,7 +25,7 @@ async function writeFile(newFile: string, body: string) {
 
   vscode.workspace.fs.writeFile(
     vscode.Uri.file(newFile),
-    new Uint8Array(Buffer.from(body)),
+    new Uint8Array(Buffer.from(body))
   );
 
   vscode.window.showInformationMessage("File Created");
@@ -49,8 +55,7 @@ interface Route {
 const routes: Route[] = [
   {
     label: "Simple JSX Page",
-    body:
-      `// Document https://fresh.deno.dev/docs/getting-started/create-a-route
+    body: `// Document https://fresh.deno.dev/docs/getting-started/create-a-route
 
 export default function __FILENAME__() {
   return (
@@ -63,8 +68,7 @@ export default function __FILENAME__() {
   },
   {
     label: "Dynamic route",
-    body:
-      `// Document https://fresh.deno.dev/docs/getting-started/dynamic-routes
+    body: `// Document https://fresh.deno.dev/docs/getting-started/dynamic-routes
 
 import { PageProps } from "$fresh/server.ts";
 
@@ -111,8 +115,7 @@ export default defineRoute(async (req, ctx) => {
   },
   {
     label: "Mixed handler and component route",
-    body:
-      `// Document https://fresh.deno.dev/docs/concepts/routes#mixed-handler-and-component-route
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#mixed-handler-and-component-route
 
 import { Handlers, PageProps } from "$fresh/server.ts";
 
@@ -133,8 +136,7 @@ export default function __FILENAME__(props: PageProps<Data>) {
   },
   {
     label: "Async route component",
-    body:
-      `// Document https://fresh.deno.dev/docs/concepts/routes#async-route-components
+    body: `// Document https://fresh.deno.dev/docs/concepts/routes#async-route-components
 
 import { RouteContext } from "$fresh/server.ts";
   
@@ -145,68 +147,11 @@ import { RouteContext } from "$fresh/server.ts";
   },
 ];
 
-function addTsxExtensionIfMissing(fileName: string) {
-  if (fileName.endsWith(".tsx")) {
+function addExtensionIfMissing(fileName: string, extension: string) {
+  if (fileName.endsWith(extension)) {
     return fileName;
   }
-  return fileName + ".tsx";
-}
-
-export async function generateRoute(uri: vscode.Uri) {
-  if (!uri) {
-    vscode.window.showErrorMessage(
-      "Please left click on a folder in the explorer and try again from context menu",
-    );
-    return;
-  }
-
-  const fileName = await vscode.window.showInputBox({
-    prompt: "Enter file name",
-    placeHolder: "index.tsx",
-    value: "index.tsx",
-  });
-  if (!fileName) {
-    return;
-  }
-
-  const newFile = uri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
-  const optAsync = await vscode.window.showQuickPick([
-    "No",
-    "Yes",
-  ], {
-    placeHolder: "Do you need async route? (example: data fetching)",
-  });
-  if (!optAsync) {
-    return;
-  }
-
-  let body = "";
-
-  if (optAsync === "Yes") {
-    body = (await vscode.window.showQuickPick(asyncRoutes, {
-      placeHolder: "Select a snippet",
-    }))?.body ?? "";
-  } else {
-    body = (await vscode.window.showQuickPick(routes, {
-      placeHolder: "Select a snippet",
-    }))?.body ?? "";
-  }
-  if (!body) {
-    return;
-  }
-
-  body = body.replace(
-    /__FILENAME__/g,
-    camelizeWhatever(fileName.replace(".tsx", "")),
-  );
-
-  try {
-    await writeFile(newFile, body);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      vscode.window.showErrorMessage(error.message);
-    }
-  }
+  return fileName + extension;
 }
 
 const getFolderUri = (folderName: string): vscode.Uri | undefined => {
@@ -222,19 +167,20 @@ const getFolderUri = (folderName: string): vscode.Uri | undefined => {
 async function generateFile(
   uri: vscode.Uri,
   body: string,
-  folderName: string,
-  defaultFileName = "index.tsx",
+  folderName: keyof typeof extensionMap
 ) {
+  const extension = extensionMap[folderName];
+  const defaultFileName = `index${extension}`;
   if (!vscode.workspace.workspaceFolders) {
     vscode.window.showErrorMessage("No workspace is opened");
     return;
-}
+  }
 
   const folderUri = uri ?? getFolderUri(folderName);
 
   if (!folderUri) {
     vscode.window.showErrorMessage(
-      "Please left click on a folder in the explorer and try again from context menu",
+      "Please left click on a folder in the explorer and try again from context menu"
     );
     return;
   }
@@ -249,9 +195,12 @@ async function generateFile(
     return;
   }
 
-  const newFile = folderUri.fsPath + "/" + addTsxExtensionIfMissing(fileName);
+  const newFile =
+    folderUri.fsPath + "/" + addExtensionIfMissing(fileName, extension);
 
-  const nameForClass = camelizeWhatever(fileName.split(".")[0]);
+  const onlyFileName = fileName.split("/").at(-1)!;
+
+  const nameForClass = camelizeWhatever(onlyFileName.split(".")[0]);
   body = body.replace(/__FILENAME__/g, nameForClass);
 
   try {
@@ -262,7 +211,6 @@ async function generateFile(
     }
   }
 }
-
 
 export async function generateComponent(uri: vscode.Uri) {
   const body = `import { JSX } from "preact";
@@ -295,9 +243,7 @@ export default function __FILENAME__() {
   );
 }`;
 
-
-
-  await generateFile(uri, body, 'islands');
+  await generateFile(uri, body, "islands");
 }
 
 export async function generateLoader(uri: vscode.Uri) {
@@ -312,10 +258,12 @@ const loader = async (props: Props,req: Request, ctx: AppContext): Promise<unkno
   return null;
 };
 
+export const defaultVisibility =  'public'
+
 export default loader;
 `;
 
-  await generateFile(uri, body, 'loaders');
+  await generateFile(uri, body, "loaders");
 }
 
 export async function generateAction(uri: vscode.Uri) {
@@ -330,10 +278,12 @@ const action = async (props: Props,req: Request, ctx: AppContext): Promise<unkno
   return null;
 };
 
+export const defaultVisibility =  'public'
+
 export default action;
 `;
 
-  await generateFile(uri, body, 'actions');
+  await generateFile(uri, body, "actions");
 }
 
 export async function generateSection(uri: vscode.Uri) {
@@ -375,7 +325,6 @@ export default Island;
 
   await generateFile(uri, body, "islands");
 }
-
 
 export async function exportAsSection(uri: vscode.Uri) {
   const body = `// Document https://docs.deco.cx/en/cms-capabilities/content/sections#sections
