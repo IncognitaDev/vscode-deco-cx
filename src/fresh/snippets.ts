@@ -52,3 +52,18 @@ errorFallback.insertText = new vscode.SnippetString(
     "};",
   ].join("\n")
 );
+
+
+export const cache = new vscode.CompletionItem("Deco - cache");
+
+cache.insertText = new vscode.SnippetString(
+  [
+    "// Cache strategy - 'stale-while-revalidate' | 'no-store' | 'no-cache'",
+    "export const cache = 'stale-while-revalidate';",
+    "",
+    "// Define a custom cache key",
+    "export const cacheKey = (props: Props, req: Request, ctx: AppContext) => {",
+    "  return `my-custom-cache-key-${props.id}`;",
+    "};",
+  ].join("\n")
+);

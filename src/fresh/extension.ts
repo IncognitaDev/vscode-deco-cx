@@ -10,7 +10,6 @@ import {
   generateLoader,
   generateSection,
 } from "./generate";
-import { FreshRouteViewProvider } from "./webview";
 import { existsSync, readFileSync } from "fs";
 
 const getRootPath = () => vscode.workspace?.workspaceFolders?.[0]?.uri?.fsPath;
@@ -142,6 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
           snippets.inlineLoader,
           snippets.loadingFallback,
           snippets.errorFallback,
+          snippets.cache,
         ];
       },
     }

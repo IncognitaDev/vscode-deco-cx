@@ -261,6 +261,13 @@ const loader = async (props: Props,req: Request, ctx: AppContext): Promise<unkno
 // https://docs.deco.cx/pt/developing-capabilities/manage-block-access
 export const defaultVisibility =  'public'
 
+// Define a cache strategy
+// export const cache = 'stale-while-revalidate';
+
+// export const cacheKey = (props: Props, req: Request, ctx: AppContext) => {
+//   return 'my-custom-cache-key-\${props.id}';
+// };
+
 export default loader;
 `;
 
